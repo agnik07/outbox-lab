@@ -16,20 +16,27 @@ export async function initMailer() {
     });
     console.log(`[Mailer] Using configured SMTP user: ${process.env.SMTP_USER}`);
   } else {
-    // Generate test account on Ethereal Email
+    // Generate test account on Ethereal Email with fallback
     console.log('[Mailer] No custom SMTP credentials found. Creating dynamic Ethereal Email test account...');
-    etherealAccount = await nodemailer.createTestAccount();
-    transporter = nodemailer.createTransport({
-      host: etherealAccount.smtp.host,
-      port: etherealAccount.smtp.port,
-      secure: etherealAccount.smtp.secure,
-      auth: {
-        user: etherealAccount.user,
-        pass: etherealAccount.pass
-      }
-    });
-    console.log(`[Mailer] Dynamic Ethereal test account created: ${etherealAccount.user}`);
-    console.log(`[Mailer] Ethereal web login: https://ethereal.email/login`);
+    try {
+      etherealAccount = await nodemailer.createTestAccount();
+      transporter = nodemailer.createTransport({
+        host: etherealAccount.smtp.host,
+        port: etherealAccount.smtp.port,
+        secure: etherealAccount.smtp.secure,
+        auth: {
+          user: etherealAccount.user,
+          pass: etherealAccount.pass
+        }
+      });
+      console.log(`[Mailer] Dynamic Ethereal test account created: ${etherealAccount.user}`);
+      console.log(`[Mailer] Ethereal web login: https://ethereal.email/login`);
+    } catch (err) {
+      console.warn(`[Mailer] Warning: Could not contact Ethereal API (${err.message}). Using local JSON log mailer fallback.`);
+      transporter = nodemailer.createTransport({
+        jsonTransport: true
+      });
+    }
   }
 }
 
