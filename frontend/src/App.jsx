@@ -5,20 +5,11 @@ import ScheduledEmailsTable from './components/ScheduledEmailsTable';
 import SentEmailsTable from './components/SentEmailsTable';
 import ComposeEmailModal from './components/ComposeEmailModal';
 import BatchScheduleModal from './components/BatchScheduleModal';
-import LoginModal from './components/LoginModal';
-import { Search, Filter, ShieldCheck, Mail, Cpu, RefreshCw, Terminal, Layers } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 const API_BASE = 'http://localhost:5001/api';
 
 export default function App() {
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('outbox_user');
-    return savedUser ? JSON.parse(savedUser) : { username: 'admin', name: 'Mitrajit' };
-  });
-
-  const [token, setToken] = useState(() => localStorage.getItem('outbox_token') || '');
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-
   const [stats, setStats] = useState(null);
   const [queue, setQueue] = useState(null);
   const [config, setConfig] = useState(null);
@@ -84,33 +75,6 @@ export default function App() {
     setIsRefreshing(true);
     await fetchData();
     setTimeout(() => setIsRefreshing(false), 500);
-  };
-
-  const handleLogin = async ({ username, password }) => {
-    const res = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    const data = await res.json();
-    if (res.ok && data.token) {
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem('outbox_token', data.token);
-      localStorage.setItem('outbox_user', JSON.stringify(data.user));
-      setIsLoginOpen(false);
-      showToast('Logged in successfully!', 'success');
-    } else {
-      throw new Error(data.message || 'Login failed');
-    }
-  };
-
-  const handleLogout = () => {
-    setToken('');
-    setUser(null);
-    localStorage.removeItem('outbox_token');
-    localStorage.removeItem('outbox_user');
-    setIsLoginOpen(true);
   };
 
   const handleScheduleSingle = async ({ recipient, subject, body, delaySeconds }) => {
@@ -194,8 +158,6 @@ export default function App() {
 
       {/* Navigation Header */}
       <Navbar
-        user={user}
-        onLogout={handleLogout}
         onOpenCompose={() => setIsComposeOpen(true)}
         onOpenBatch={() => setIsBatchOpen(true)}
         onRefresh={handleRefresh}
@@ -258,8 +220,6 @@ export default function App() {
         onClose={() => setIsBatchOpen(false)}
         onSubmit={handleScheduleBatch}
       />
-
-      <LoginModal isOpen={isLoginOpen} onLogin={handleLogin} />
     </div>
   );
 }

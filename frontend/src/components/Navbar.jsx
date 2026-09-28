@@ -1,9 +1,7 @@
 import React from 'react';
-import { Mail, Zap, RefreshCw, LogOut, User, Cpu } from 'lucide-react';
+import { Mail, Zap, RefreshCw } from 'lucide-react';
 
 export default function Navbar({
-  user,
-  onLogout,
   onOpenCompose,
   onOpenBatch,
   onRefresh,
@@ -50,7 +48,7 @@ export default function Navbar({
           </div>
         </div>
 
-        {/* Action Buttons & User Profile */}
+        {/* Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button
             className="btn btn-secondary"
@@ -70,42 +68,6 @@ export default function Navbar({
             <Mail size={16} />
             <span>Schedule Email</span>
           </button>
-
-          {user && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                paddingLeft: 12,
-                borderLeft: '1px solid var(--border-color)'
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  padding: '6px 12px',
-                  borderRadius: 20,
-                  fontSize: 13,
-                  fontWeight: 500
-                }}
-              >
-                <User size={14} color="#a5b4fc" />
-                <span>{user.name || user.username}</span>
-              </div>
-              <button
-                className="btn btn-secondary"
-                onClick={onLogout}
-                title="Logout"
-                style={{ padding: '8px 12px', color: '#94a3b8' }}
-              >
-                <LogOut size={16} />
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </header>
