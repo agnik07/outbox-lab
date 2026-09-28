@@ -1,0 +1,21 @@
+{
+  "name": "outbox-lab-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scheduled Email Dispatch System with BullMQ, Express, Redis, SQLite & React Frontend",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "start:backend": "npm --prefix backend start",
+    "build:frontend": "npm --prefix frontend run build",
+    "test:backend": "npm --prefix backend test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
